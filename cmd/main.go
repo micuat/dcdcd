@@ -1,11 +1,16 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
+	"log"
+	"math/rand"
+	"os"
+
 	"html/template"
 	"io"
 
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 )
 
 type Templates struct {
@@ -27,21 +32,38 @@ type Count struct {
 }
 
 func main() {
+	jsonData, err := os.ReadFile("data.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(string(jsonData))
+
+	var data []map[string]interface{}
+	err = json.Unmarshal([]byte(jsonData), &data)
+	if err != nil {
+		fmt.Printf("could not unmarshal json: %s\n", err)
+		return
+	}
+
+	fmt.Printf("json map: %v\n", data)
+
 	e := echo.New()
-	e.Use(middleware.Logger())
+	// e.Use(middleware.Logger())
 
 	count := Count{Count: 0}
 
 	e.Renderer = newTemplate()
 
 	e.GET("/", func(c echo.Context) error {
-		return c.Render(200, "index", count)
+		quote := data[rand.Intn(len(data))]
+		return c.Render(200, "index", quote)
 	})
 
 	e.POST("/count", func(c echo.Context) error {
 		count.Count++
-		return c.Render(200, "count", count)
+		quote := data[rand.Intn(len(data))]
+		return c.Render(200, "count", quote)
 	})
 
-	e.Logger.Fatal(e.Start(":8080"))
+	e.Logger.Fatal(e.Start(":8090"))
 }

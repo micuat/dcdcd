@@ -8,17 +8,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="css/style.css" rel="stylesheet">
   <script src="https://unpkg.com/htmx.org@1.9.9" integrity="sha384-QFjmbokDn2DjBjq+fM+8LUIVrAgqcNW2s0PjAxHETgRn9l4fvX31ZxDxvwQnyMOX" crossorigin="anonymous"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
-  <div id="count">
-    {{ template "count" . }}
+  <div class="w-full flex flex-row justify-center">
+    <div class="max-w-sm">
+      <h1 class="mb-4 text-lg">Distributed Collaboration and Dissemination in Contemporary Dance</h1>
+      <div id="quote" class="mb-12">
+        {{ template "quote" . }}
+      </div>
+      <div id="yours" class="">
+        Submit your own text... coming soon!
+      </div>
+    </div>
   </div>
-  <button hx-target="#count" hx-post="/count">Count</button>
 </body>
 </html>
 
 {{ end }}
 
-{{ block "count" . }}
-  Count {{ .Count }}
+{{ block "quote" . }}
+  <div class="italic mb-4">{{ .text }}</div>
+  <div>Source: <a href="{{ .link }}" class="underline">{{ .link }}</a></div>
 {{ end }}
