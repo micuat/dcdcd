@@ -45,11 +45,25 @@ func main() {
 		return c.Render(200, "index", quote)
 	})
 
-	// e.POST("/count", func(c echo.Context) error {
-	// 	count.Count++
-	// 	quote := quotes[rand.Intn(len(quotes))]
-	// 	return c.Render(200, "count", quote)
-	// })
+	e.POST("/newquote", func(c echo.Context) error {
+		quote := c.FormValue("quote")
+		url := c.FormValue("url")
 
+		// if page.Data.hasEmail(email) {
+		// 	formData := newFormData()
+		// 	formData.Values["name"] = name
+		// 	formData.Values["email"] = email
+		// 	formData.Errors["email"] = "Email already exists!"
+		// 	return c.Render(422, "form", formData)
+		// }
+
+		// q := storage.NewQuote(quote, url)
+		storage.AddQuote(quote, url)
+		quotes = storage.GetQuotes()
+		// page.Data.Contacts = append(page.Data.Contacts, contact)
+		// c.Render(200, "form", newFormData())
+		// return c.Render(200, "oob-contact", contact)
+		return c.Render(200, "submitted", nil)
+	})
 	e.Logger.Fatal(e.Start(":8090"))
 }

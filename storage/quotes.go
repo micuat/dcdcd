@@ -11,6 +11,14 @@ type Quote struct {
 	Link string `json:"link"`
 }
 
+func NewQuote(text string, link string) Quote {
+	return Quote{Text: text, Link: link}
+}
+
+func AddQuote(text string, link string) {
+	quotes = append(quotes, NewQuote(text, link))
+}
+
 var quotes []Quote
 
 func init() {

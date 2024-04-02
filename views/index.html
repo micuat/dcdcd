@@ -18,7 +18,7 @@
         {{ template "quote" . }}
       </div>
       <div id="yours" class="">
-        Submit your own text... coming soon!
+        {{ template "form" . }}
       </div>
     </div>
   </div>
@@ -30,4 +30,22 @@
 {{ block "quote" . }}
   <div class="italic mb-4">{{ .Text }}</div>
   <div>Source: <a href="{{ .Link }}" class="underline">{{ .Link }}</a></div>
+{{ end }}
+
+{{ block "form" . }}
+  <form hx-swap="outerHTML" hx-post="/newquote">
+    <div>
+      quote: <input
+        type="text" name="quote" class="bg-gray-200" />
+    </div>
+    <div>
+      url: <input
+        type="text" name="url" class="bg-gray-200" />
+    </div>
+    <button type="submit" class="bg-gray-300">Submit</button>
+  </form>
+{{ end }}
+
+{{ block "submitted" . }}
+  submitted, thanks!
 {{ end }}
