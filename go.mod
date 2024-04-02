@@ -1,4 +1,4 @@
-module mywebsite.tv/name
+module dcdcd.glitches.me
 
 go 1.22.0
 
