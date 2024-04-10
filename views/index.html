@@ -9,9 +9,11 @@
   <link href="css/style.css" rel="stylesheet">
   <script src="https://unpkg.com/htmx.org@1.9.9" integrity="sha384-QFjmbokDn2DjBjq+fM+8LUIVrAgqcNW2s0PjAxHETgRn9l4fvX31ZxDxvwQnyMOX" crossorigin="anonymous"></script>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.1/p5.js"></script>
 </head>
 <body>
-  <div class="w-full flex flex-row justify-center">
+  <div class="w-full flex flex-col justify-center sm:flex-row">
+    <canvas id="p5container"></canvas>
     <div class="max-w-sm">
       <h1 class="mb-4 text-lg">Distributed Collaboration and Dissemination in Contemporary Dance</h1>
       <div id="quote" class="mb-12">
@@ -22,6 +24,7 @@
       </div>
     </div>
   </div>
+  <script src="/static/script.js"></script>
 </body>
 </html>
 

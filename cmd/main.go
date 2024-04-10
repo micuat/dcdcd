@@ -35,6 +35,7 @@ func main() {
 
 	e := echo.New()
 	// e.Use(middleware.Logger())
+	e.Static("/static", "static")
 
 	// count := Count{Count: 0}
 
