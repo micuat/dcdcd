@@ -18,10 +18,11 @@ let captured = -1;
 
 function setup() {
   let w = windowWidth;
-  if (windowWidth > 640) {
-    w = 480;
-  }
-	createCanvas(w, windowHeight, document.querySelector("canvas"));
+  // if (windowWidth > 640) {
+  //   w = 480;
+  // }
+	const c = document.querySelector("#p5container")
+	createCanvas(c?.offsetWidth, c?.offsetHeight, c?.querySelector("canvas"));
 	
 	initialPoints.push(...pointsData.map(pt => createVector(pt.x, pt.y)))
 	points.push(...pointsData.map(pt => createVector(pt.x, pt.y)))
@@ -29,15 +30,15 @@ function setup() {
 
 function windowResized() {
   let w = windowWidth;
-  if (windowWidth > 640) {
-    w = 480;
-  }
-  resizeCanvas(w, windowHeight);
+  // if (windowWidth > 640) {
+  //   w = 480;
+  // }
+	const c = document.querySelector("#p5container")
+	resizeCanvas(c?.offsetWidth, c?.offsetHeight);
 }
 
 function draw() {
-	background(100);
-	
+	clear();
 	const T = millis() * 0.001;
 	curveTightness(0);
 	const R = Math.min(width, height);

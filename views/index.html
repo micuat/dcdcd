@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Huella</title>
+  <title>Huella🐾</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="css/style.css" rel="stylesheet">
@@ -12,16 +12,34 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.1/p5.js"></script>
 </head>
 <body>
-  <div class="w-full flex flex-col justify-center sm:flex-row">
-    <canvas id="p5container"></canvas>
-    <div class="max-w-sm">
-      <h1 class="mb-4 text-lg">Huella</h1>
-      <div id="quote" class="mb-12">
-        {{ template "quote" . }}
-      </div>
-      <div id="yours" class="">
-        {{ template "form" . }}
-      </div>
+  <div class="mx-auto grid gap-0
+    grid-rows-[40px_50vh] md:grid-rows-[40px_1fr_1fr] lg:grid-rows-[40px_1fr]
+    md:grid-cols-2 lg:grid-cols-3
+    min-h-screen">
+    <header class="col-span-full bg-[hsl(90deg_100%_30%)] h-full">
+      <h1 class="text-4xl text-white">Huella🐾</h1>
+    </header>
+    <div id="p5container"
+      class="bg-[hsl(200deg_100%_80%)] overflow-hidden
+      md:col-start-1 lg:col-start-2
+      row-span-1 lg:row-span-2
+      h-full">
+      <canvas></canvas>
+    </div>
+    <div id="yours"
+      class="bg-[hsl(290deg_100%_80%)]
+      md:row-start-3 lg:row-start-2
+      lg:col-start-1
+      lg:row-span-2">
+      {{ template "form" . }}
+    </div>
+    <div id="quote"
+      class="bg-[hsl(30deg_100%_80%)]
+      h-full
+      md:row-span-2 lg:row-span-1
+      md:col-start-2 lg:col-start-3
+      md:overflow-x-scroll">
+      {{ template "quote" . }}l
     </div>
   </div>
   <script src="/static/script.js"></script>
@@ -37,12 +55,14 @@
 
 {{ block "form" . }}
   <form hx-swap="outerHTML" hx-post="/newquote">
+    Submit your quote:
     <div>
-      quote: <input
+      <input
         type="text" name="quote" class="bg-gray-200" />
     </div>
+    hashtags:
     <div>
-      url: <input
+      <input
         type="text" name="url" class="bg-gray-200" />
     </div>
     <button type="submit" class="bg-gray-300">Submit</button>
