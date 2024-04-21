@@ -2,6 +2,7 @@ package main
 
 import (
 	"math/rand"
+	"strconv"
 	"strings"
 
 	"html/template"
@@ -29,6 +30,13 @@ func NewTemplate() *Templates {
 // 	Count int
 // }
 
+type QuoteContainer struct {
+	Start  int
+	Next   int
+	More   bool
+	Quotes []storage.Quote
+}
+
 func main() {
 	quotes := storage.GetQuotes()
 	// fmt.Printf("quotes: %v", quotes)
@@ -41,9 +49,37 @@ func main() {
 
 	e.Renderer = NewTemplate()
 
+	showStep := 10
 	e.GET("/", func(c echo.Context) error {
-		quote := quotes[rand.Intn(len(quotes))]
-		return c.Render(200, "index", quote)
+		start := 0
+		qs := []storage.Quote{}
+		for i := start; i < start+showStep; i++ {
+			qs = append(qs, quotes[rand.Intn(len(quotes))])
+		}
+		return c.Render(200, "index", QuoteContainer{
+			Start:  start,
+			Next:   start + showStep,
+			More:   start+showStep < 100,
+			Quotes: qs,
+		})
+	})
+
+	e.GET("/more", func(c echo.Context) error {
+		startStr := c.QueryParam("start")
+		start, err := strconv.Atoi(startStr)
+		if err != nil {
+			start = 0
+		}
+		qs := []storage.Quote{}
+		for i := start; i < start+showStep; i++ {
+			qs = append(qs, quotes[rand.Intn(len(quotes))])
+		}
+		return c.Render(200, "quotes-pane", QuoteContainer{
+			Start:  start,
+			Next:   start + showStep,
+			More:   start+showStep < 100,
+			Quotes: qs,
+		})
 	})
 
 	e.POST("/newquote", func(c echo.Context) error {
