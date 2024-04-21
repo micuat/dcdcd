@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"math/rand"
+	"strings"
 
 	"html/template"
 	"io"
@@ -31,7 +31,7 @@ func NewTemplate() *Templates {
 
 func main() {
 	quotes := storage.GetQuotes()
-	fmt.Printf("quotes: %v", quotes)
+	// fmt.Printf("quotes: %v", quotes)
 
 	e := echo.New()
 	// e.Use(middleware.Logger())
@@ -49,6 +49,7 @@ func main() {
 	e.POST("/newquote", func(c echo.Context) error {
 		quote := c.FormValue("quote")
 		url := c.FormValue("url")
+		hashtags := c.FormValue("hashtags")
 
 		// if page.Data.hasEmail(email) {
 		// 	formData := newFormData()
@@ -59,7 +60,7 @@ func main() {
 		// }
 
 		// q := storage.NewQuote(quote, url)
-		storage.AddQuote(quote, url)
+		storage.AddQuote(quote, url, strings.Split(hashtags, ","))
 		quotes = storage.GetQuotes()
 		// page.Data.Contacts = append(page.Data.Contacts, contact)
 		// c.Render(200, "form", newFormData())

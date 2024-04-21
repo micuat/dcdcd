@@ -39,7 +39,7 @@
       md:row-span-2 lg:row-span-1
       md:col-start-2 lg:col-start-3
       md:overflow-x-scroll">
-      {{ template "quote" . }}l
+      {{ template "quote" . }}
     </div>
   </div>
   <script src="/static/script.js"></script>
@@ -49,8 +49,11 @@
 {{ end }}
 
 {{ block "quote" . }}
-  <div class="italic mb-4">{{ .Text }}</div>
-  <div>Source: <a href="{{ .Link }}" class="underline">{{ .Link }}</a></div>
+  <div>
+    <div class="italic mb-4">{{ .Text }}</div>
+    <div>Source: <a href="{{ .Link }}" class="underline">{{ .Link }}</a></div>
+    <div>{{ range .Hashtags }}<span>#{{ . }}</span>{{ end }}</div>
+  </div>
 {{ end }}
 
 {{ block "form" . }}
@@ -60,10 +63,15 @@
       <input
         type="text" name="quote" class="bg-gray-200" />
     </div>
-    hashtags:
+    Url (optional):
     <div>
       <input
         type="text" name="url" class="bg-gray-200" />
+    </div>
+    Hashtags:
+    <div>
+      <input
+        type="text" name="hashtags" class="bg-gray-200" />
     </div>
     <button type="submit" class="bg-gray-300">Submit</button>
   </form>
