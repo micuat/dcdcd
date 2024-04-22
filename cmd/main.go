@@ -32,9 +32,32 @@ func NewTemplate() *Templates {
 
 type QuoteContainer struct {
 	Start  int
+	Quotes []QuoteDiv
 	Next   int
-	More   bool
-	Quotes []storage.Quote
+}
+
+type QuoteDiv struct {
+	storage.Quote
+	Id        int
+	EmbedMore bool
+	Next      int
+}
+
+func moreQuotes(quotes []storage.Quote, start int, showStep int) QuoteContainer {
+	qs := []QuoteDiv{}
+	for i := start; i < start+showStep; i++ {
+		qs = append(qs, QuoteDiv{
+			Quote:     quotes[rand.Intn(len(quotes))],
+			Id:        i,
+			EmbedMore: start+showStep < 100 && i == start+showStep-3,
+			Next:      start + showStep,
+		})
+	}
+	return QuoteContainer{
+		Start:  start,
+		Next:   start + showStep,
+		Quotes: qs,
+	}
 }
 
 func main() {
@@ -50,18 +73,10 @@ func main() {
 	e.Renderer = NewTemplate()
 
 	showStep := 10
+
 	e.GET("/", func(c echo.Context) error {
 		start := 0
-		qs := []storage.Quote{}
-		for i := start; i < start+showStep; i++ {
-			qs = append(qs, quotes[rand.Intn(len(quotes))])
-		}
-		return c.Render(200, "index", QuoteContainer{
-			Start:  start,
-			Next:   start + showStep,
-			More:   start+showStep < 100,
-			Quotes: qs,
-		})
+		return c.Render(200, "index", moreQuotes(quotes, start, showStep))
 	})
 
 	e.GET("/more", func(c echo.Context) error {
@@ -70,16 +85,7 @@ func main() {
 		if err != nil {
 			start = 0
 		}
-		qs := []storage.Quote{}
-		for i := start; i < start+showStep; i++ {
-			qs = append(qs, quotes[rand.Intn(len(quotes))])
-		}
-		return c.Render(200, "quotes-pane", QuoteContainer{
-			Start:  start,
-			Next:   start + showStep,
-			More:   start+showStep < 100,
-			Quotes: qs,
-		})
+		return c.Render(200, "quotes-pane", moreQuotes(quotes, start, showStep))
 	})
 
 	e.POST("/newquote", func(c echo.Context) error {

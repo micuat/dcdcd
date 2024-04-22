@@ -54,17 +54,22 @@
     {{ template "quote" . }}
   {{ end }}
 
-  {{ if .More }}
-    <div class="h-4" hx-trigger="intersect once" hx-swap="outerHTML" hx-get="/more?start={{ .Next }}"></div>
-  {{ end }}
+  <div class="h-4" id="next-{{ .Next }}"></div>
 {{ end }}
 
 {{ block "quote" . }}
   <div class="mb-16">
-    <div class="italic mb-4">{{ .Text }}</div>
+    <div id="quote-{{ .Id }}" class="italic mb-4">{{ .Text }}</div>
     <div>Source: <a href="{{ .Link }}" class="underline">{{ .Link }}</a></div>
     <div>{{ range .Hashtags }}<span>#{{ . }}</span> {{ end }}</div>
   </div>
+  {{ if .EmbedMore }}
+    <div class=""
+      hx-trigger="intersect once"
+      hx-swap="outerHTML"
+      hx-target="#next-{{ .Next }}"
+      hx-get="/more?start={{ .Next }}"></div>
+  {{ end }}
 {{ end }}
 
 {{ block "form" . }}
