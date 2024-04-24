@@ -1,0 +1,22 @@
+{{ block "quotes-pane" . }}
+  {{ range .Quotes }}
+    {{ template "quote" . }}
+  {{ end }}
+
+  <div class="h-4" id="next-{{ .Next }}">That's it!</div>
+{{ end }}
+
+{{ block "quote" . }}
+  <div class="mb-16">
+    <div id="quote-{{ .Id }}" class="italic mb-4">{{ .Text }}</div>
+    <div>Source: <a href="{{ .Link }}" class="underline">{{ .Link }}</a></div>
+    <div>{{ range .Hashtags }}<span>#{{ . }}</span> {{ end }}</div>
+  </div>
+  {{ if .EmbedMore }}
+    <div class=""
+      hx-trigger="intersect once"
+      hx-swap="outerHTML"
+      hx-target="#next-{{ .Next }}"
+      hx-get="/get/quotes?hashtag={{ .Hashtag }}&start={{ .Next }}"></div>
+  {{ end }}
+{{ end }}

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"strings"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -15,12 +16,12 @@ const collName = "quotes"
 
 var client *mongo.Client
 var coll *mongo.Collection
-var quotes []Quote
 
 type Quote struct {
-	Text     string   `json:"text"`
-	Link     string   `json:"link"`
-	Hashtags []string `json:"hashtags"`
+	Text              string   `json:"text"`
+	Link              string   `json:"link"`
+	Hashtags          []string `json:"hashtags"`
+	HashtagsLowercase []string `json:"hashtags_lowercase"`
 }
 
 func NewQuote(text string, link string, hashtags []string) Quote {
@@ -28,13 +29,21 @@ func NewQuote(text string, link string, hashtags []string) Quote {
 }
 
 func AddQuote(text string, link string, hashtags []string) {
-	newQuote := bson.M{"text": text, "link": link, "hashtags": hashtags}
+	var hashtagsLowercase []string
+	for _, hashtag := range hashtags {
+		hashtagsLowercase = append(hashtagsLowercase, strings.ToLower(hashtag))
+	}
+	newQuote := bson.M{
+		"text":               text,
+		"link":               link,
+		"hashtags":           hashtags,
+		"hashtags_lowercase": hashtagsLowercase,
+	}
 	res, err := coll.InsertOne(context.TODO(), newQuote)
 	if err != nil {
 		log.Fatal(err)
 	}
 	fmt.Printf("%v\n", res)
-	reloadQuotes()
 }
 
 func init() {
@@ -56,7 +65,7 @@ func init() {
 	///
 
 	var list []string
-	list, err = client.Database("db").ListCollectionNames(context.TODO(), bson.D{{}})
+	list, _ = client.Database("db").ListCollectionNames(context.TODO(), bson.D{{}})
 
 	fmt.Printf("%v\n", list)
 
@@ -87,6 +96,13 @@ func init() {
 						"description": "associated hashtags",
 					},
 				},
+				"HashtagsLowercase": bson.M{
+					"bsonType": "array",
+					"items": bson.M{
+						"bsonType":    "string",
+						"description": "associated hashtags in lowercase",
+					},
+				},
 			},
 		}
 		validator := bson.M{
@@ -104,11 +120,11 @@ func init() {
 	coll = client.Database("db").Collection(collName)
 
 	if !collFound {
-		docs := []interface{}{
+		docs := []Quote{
 			Quote{
 				Text:     "I violently severed the continuation of my thoughts\non the question of how and from where can the total fulfillment of this existence be fathomed within this alien form that is fate created by nature.",
 				Link:     "https://ko-murobushi.com/eng/biblio_selves/p6839/",
-				Hashtags: []string{"KoMurobushi", "butoh"},
+				Hashtags: []string{"KoMurobushi", "Butoh"},
 			},
 			Quote{
 				Text:     "Standing on that severance,\nfrom the layering darkness the blood drips down, life bubbling up.\nI want to see it, I want to possess it.\nInclined life, labored breath, an inclined ship,\na single-winged flight, an omen of falling from the sky that is an omen of drowning,\nform decaying, the hidden coming to light.",
@@ -171,15 +187,10 @@ func init() {
 				Hashtags: []string{"ButohKaden", "Butoh"},
 			},
 		}
-
-		res, err := coll.InsertMany(context.TODO(), docs)
-		if err != nil {
-			log.Fatal(err)
+		for _, q := range docs {
+			AddQuote(q.Text, q.Link, q.Hashtags)
 		}
-		fmt.Printf("%v", res)
 	}
-
-	reloadQuotes()
 
 	// rootPath, _ := os.Getwd()
 	// jsonData, err := os.ReadFile(rootPath + "/data.json")
@@ -196,19 +207,25 @@ func init() {
 	// fmt.Printf("json map: %v\n", quotes)
 }
 
-func GetQuotes() []Quote {
-	return quotes
-}
-
-func reloadQuotes() {
-	filter := bson.D{{}}
+func SearchQuotes(hashtag string) []Quote {
+	var quotes []Quote
+	var filter bson.D
+	filter = bson.D{{Key: "hashtags_lowercase", Value: strings.ToLower(hashtag)}}
+	if hashtag == "" {
+		filter = bson.D{{}}
+	}
 	cursor, err := coll.Find(context.TODO(), filter)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// var results []Quote
 	if err = cursor.All(context.TODO(), &quotes); err != nil {
 		log.Fatal(err)
 	}
+
+	if len(quotes) == 0 && hashtag != "" {
+		return SearchQuotes("")
+	}
+
+	return quotes
 }

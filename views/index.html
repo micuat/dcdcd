@@ -3,7 +3,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Huella🐾</title>
+  <title>Huella</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22> <rect x=%220%22 y=%220%22 width=%22100%22 height=%22100%22 fill=%22green%22 fill-opacity=%221%22/><text y=%22.9em%22 font-size=%2290%22>🐾</text></svg>">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="css/style.css" rel="stylesheet">
@@ -35,7 +36,7 @@
       {{ template "form" . }}
     </div>
     <div id="quote"
-      class="bg-[hsl(30deg_100%_80%)]
+      class="bg-[hsl(60deg_100%_80%)]
       h-full
       md:row-span-2 lg!:row-span-1
       md:col-start-2 lg!:col-start-3
@@ -47,29 +48,6 @@
 </body>
 </html>
 
-{{ end }}
-
-{{ block "quotes-pane" . }}
-  {{ range .Quotes }}
-    {{ template "quote" . }}
-  {{ end }}
-
-  <div class="h-4" id="next-{{ .Next }}"></div>
-{{ end }}
-
-{{ block "quote" . }}
-  <div class="mb-16">
-    <div id="quote-{{ .Id }}" class="italic mb-4">{{ .Text }}</div>
-    <div>Source: <a href="{{ .Link }}" class="underline">{{ .Link }}</a></div>
-    <div>{{ range .Hashtags }}<span>#{{ . }}</span> {{ end }}</div>
-  </div>
-  {{ if .EmbedMore }}
-    <div class=""
-      hx-trigger="intersect once"
-      hx-swap="outerHTML"
-      hx-target="#next-{{ .Next }}"
-      hx-get="/more?start={{ .Next }}"></div>
-  {{ end }}
 {{ end }}
 
 {{ block "form" . }}

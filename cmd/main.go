@@ -41,16 +41,21 @@ type QuoteDiv struct {
 	Id        int
 	EmbedMore bool
 	Next      int
+	Hashtag   string
 }
 
-func moreQuotes(quotes []storage.Quote, start int, showStep int) QuoteContainer {
+func moreQuotes(hashtag string, start int, showStep int) QuoteContainer {
 	qs := []QuoteDiv{}
+	quotes := storage.SearchQuotes(hashtag)
+	// TODO: error when length is 0
 	for i := start; i < start+showStep; i++ {
+		quote := quotes[rand.Intn(len(quotes))]
 		qs = append(qs, QuoteDiv{
-			Quote:     quotes[rand.Intn(len(quotes))],
+			Quote:     quote,
 			Id:        i,
 			EmbedMore: start+showStep < 100 && i == start+showStep-3,
 			Next:      start + showStep,
+			Hashtag:   "",
 		})
 	}
 	return QuoteContainer{
@@ -61,7 +66,6 @@ func moreQuotes(quotes []storage.Quote, start int, showStep int) QuoteContainer 
 }
 
 func main() {
-	quotes := storage.GetQuotes()
 	// fmt.Printf("quotes: %v", quotes)
 
 	e := echo.New()
@@ -76,16 +80,17 @@ func main() {
 
 	e.GET("/", func(c echo.Context) error {
 		start := 0
-		return c.Render(200, "index", moreQuotes(quotes, start, showStep))
+		return c.Render(200, "index", moreQuotes("", start, showStep))
 	})
 
-	e.GET("/more", func(c echo.Context) error {
+	e.GET("/get/quotes", func(c echo.Context) error {
 		startStr := c.QueryParam("start")
 		start, err := strconv.Atoi(startStr)
 		if err != nil {
 			start = 0
 		}
-		return c.Render(200, "quotes-pane", moreQuotes(quotes, start, showStep))
+		hashtag := c.QueryParam("hashtag")
+		return c.Render(200, "quotes-pane", moreQuotes(hashtag, start, showStep))
 	})
 
 	e.POST("/newquote", func(c echo.Context) error {
@@ -103,7 +108,6 @@ func main() {
 
 		// q := storage.NewQuote(quote, url)
 		storage.AddQuote(quote, url, strings.Split(hashtags, ","))
-		quotes = storage.GetQuotes()
 		// page.Data.Contacts = append(page.Data.Contacts, contact)
 		// c.Render(200, "form", newFormData())
 		// return c.Render(200, "oob-contact", contact)
