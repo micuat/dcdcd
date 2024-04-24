@@ -7,9 +7,13 @@
 {{ end }}
 
 {{ block "quote" . }}
-  <div class="quote mb-16">
-    <div id="quote-{{ .Id }}" class="italic mb-4">{{ .Text }}</div>
-    <div>Source: <a href="{{ .Link }}" class="underline">{{ .Link }}</a></div>
+  <div class="quote pb-16 even:bg-white">
+    <div id="quote-{{ .Id }}-short" class="italic mb-4"
+      onclick="this.classList.add('hidden');
+               document.querySelector('#quote-{{ .Id }}').classList.remove('hidden')">
+      {{ .TextShort }}</div>
+    <div id="quote-{{ .Id }}" class="italic mb-4 hidden">{{ .HtmlText }}</div>
+    <div>by {{ .Author }} <a href="{{ .Link }}" class="underline">Source</a></div>
     <div>
       {{ range .Hashtags }}
         <button

@@ -38,6 +38,8 @@ type QuoteContainer struct {
 
 type QuoteDiv struct {
 	storage.Quote
+	TextShort string
+	HtmlText  template.HTML
 	Id        int
 	EmbedMore bool
 	Next      int
@@ -50,8 +52,14 @@ func moreQuotes(hashtag string, start int, showStep int) QuoteContainer {
 	// TODO: error when length is 0
 	for i := start; i < start+showStep; i++ {
 		quote := quotes[rand.Intn(len(quotes))]
+		textShort := quote.Text
+		if len(quote.Text) > 100 {
+			textShort = quote.Text[:100] + "..."
+		}
 		qs = append(qs, QuoteDiv{
 			Quote:     quote,
+			TextShort: textShort,
+			HtmlText:  template.HTML(strings.ReplaceAll(quote.Text, "\n", "<br />")),
 			Id:        i,
 			EmbedMore: start+showStep < 100 && i == start+showStep-3,
 			Next:      start + showStep,
@@ -106,8 +114,8 @@ func main() {
 		// 	return c.Render(422, "form", formData)
 		// }
 
-		// q := storage.NewQuote(quote, url)
-		storage.AddQuote(quote, url, strings.Split(hashtags, ","))
+		q := storage.NewQuote(quote, url, "unknown author", strings.Split(hashtags, ","))
+		storage.AddQuote(q)
 		// page.Data.Contacts = append(page.Data.Contacts, contact)
 		// c.Render(200, "form", newFormData())
 		// return c.Render(200, "oob-contact", contact)
