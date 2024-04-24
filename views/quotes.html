@@ -7,10 +7,19 @@
 {{ end }}
 
 {{ block "quote" . }}
-  <div class="mb-16">
+  <div class="quote mb-16">
     <div id="quote-{{ .Id }}" class="italic mb-4">{{ .Text }}</div>
     <div>Source: <a href="{{ .Link }}" class="underline">{{ .Link }}</a></div>
-    <div>{{ range .Hashtags }}<span>#{{ . }}</span> {{ end }}</div>
+    <div>
+      {{ range .Hashtags }}
+        <button
+          class="bg-gray-200 hover:bg-gray-800 hover:text-white"
+          hx-swap="afterend"
+          hx-target="closest .quote"
+          hx-get="/get/quotes?hashtag={{ . }}&start=10000">
+          #{{ . }}</button>
+      {{ end }}
+    </div>
   </div>
   {{ if .EmbedMore }}
     <div class=""
