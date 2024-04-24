@@ -61,7 +61,7 @@ func moreQuotes(hashtag string, start int, showStep int) QuoteContainer {
 			TextShort: textShort,
 			HtmlText:  template.HTML(strings.ReplaceAll(quote.Text, "\n", "<br />")),
 			Id:        i,
-			EmbedMore: start+showStep < 100 && i == start+showStep-3,
+			EmbedMore: start+showStep < 100 && i == start+showStep-2,
 			Next:      start + showStep,
 			Hashtag:   "",
 		})
