@@ -7,13 +7,12 @@
 {{ end }}
 
 {{ block "quote" . }}
-  <div class="quote py-8 even:bg-white">
-    <div id="quote-{{ .Id }}-short" class="mb-4"
+  <div class="quote px-2 py-8 even:bg-white">
+    <div id="quote-{{ .Id }}-short" class="mb-4 h-12 p-0 overflow-hidden cursor-pointer"
       onclick="this.classList.add('hidden');
                document.querySelector('#quote-{{ .Id }}').classList.remove('hidden')">
-      {{ .TextShort }}</div>
+      {{ .HtmlText }}</div>
     <div id="quote-{{ .Id }}" class="mb-4 hidden">{{ .HtmlText }}</div>
-    <div>by {{ .Author }} <a href="{{ .Link }}" class="underline">Source</a></div>
     <div>
       {{ range .Hashtags }}
         <button
@@ -31,5 +30,6 @@
         hx-target="#next-{{ .Next }}"
         hx-get="/get/quotes?hashtag={{ .Hashtag }}&start={{ .Next }}"></div>
     {{ end }}
+    <div class="text-sm">by {{ .Author }} <a href="{{ .Link }}" class="underline">Source</a></div>
   </div>
 {{ end }}
