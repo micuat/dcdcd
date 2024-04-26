@@ -57,21 +57,22 @@
   <form hx-swap="outerHTML" hx-post="/newquote">
     Submit your quote:
     <div>
-      <input
+      <input disabled
         type="text" name="quote" class="bg-gray-200" />
     </div>
     Url (optional):
     <div>
-      <input
+      <input disabled
         type="text" name="url" class="bg-gray-200" />
     </div>
     Hashtags:
     <div>
-      <input
+      <input disabled
         type="text" name="hashtags" class="bg-gray-200" />
     </div>
-    <button type="submit" class="bg-gray-300">Submit</button>
+    <button  disabled type="submit" class="bg-gray-300">Submit</button>
   </form>
+  <div class="text-sm">texts from IDOCDE and everybodys toolbox are licensed under Creative Commons Attribution-ShareAlike.</div>
 {{ end }}
 
 {{ block "submitted" . }}

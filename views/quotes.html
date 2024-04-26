@@ -12,7 +12,7 @@
       onclick="this.classList.add('hidden');
                document.querySelector('#quote-{{ .Id }}').classList.remove('hidden')">
       {{ .HtmlText }}</div>
-    <div id="quote-{{ .Id }}" class="mb-4 hidden">{{ .HtmlText }}</div>
+    <div id="quote-{{ .Id }}" class="mb-4 min-h-12 hidden">{{ .HtmlText }}</div>
     <div>
       {{ range .Hashtags }}
         <button
