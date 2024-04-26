@@ -38,7 +38,8 @@ type QuoteContainer struct {
 
 type QuoteDiv struct {
 	storage.Quote
-	TextShort string
+	Icon      string
+	IconHue   int
 	HtmlText  template.HTML
 	Id        int
 	EmbedMore bool
@@ -52,13 +53,14 @@ func moreQuotes(hashtag string, start int, showStep int) QuoteContainer {
 	// TODO: error when length is 0
 	for i := start; i < start+showStep; i++ {
 		quote := quotes[rand.Intn(len(quotes))]
-		textShort := quote.Text
-		if len(quote.Text) > 100 {
-			textShort = quote.Text[:100] + "..."
+		hue := 0
+		for j := 0; j < len(quote.Author); j++ {
+			hue += int(quote.Author[j])
 		}
 		qs = append(qs, QuoteDiv{
 			Quote:     quote,
-			TextShort: textShort,
+			Icon:      strings.ToUpper(string([]rune(quote.Author)[0])),
+			IconHue:   hue % 360,
 			HtmlText:  template.HTML(strings.ReplaceAll(quote.Text, "\n", "<br />")),
 			Id:        i,
 			EmbedMore: start+showStep < 100 && i == start+showStep-2,

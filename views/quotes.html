@@ -8,15 +8,24 @@
 
 {{ block "quote" . }}
   <div class="quote px-2 py-8 even:bg-white">
-    <div id="quote-{{ .Id }}-short" class="mb-4 h-12 p-0 overflow-hidden cursor-pointer"
+    <div class="flex flex-row items-center mb-2">
+      <div class="w-8 h-8 bg-[hsl({{ .IconHue }}deg_100%_70%)] text-xl flex justify-center items-center">
+        <div class="inline">{{ .Icon }}</div>
+      </div>
+      <div class="ml-2">
+        <div class="text-sm">{{ .Author }}</div>
+        <div class="text-xs"><a target="_blank" href="{{ .Link }}" class="underline">Source</a></div>
+      </div>
+    </div>
+    <div id="quote-{{ .Id }}-short" class="mb-4 max-h-12 p-0 overflow-hidden cursor-pointer"
       onclick="this.classList.add('hidden');
                document.querySelector('#quote-{{ .Id }}').classList.remove('hidden')">
       {{ .HtmlText }}</div>
-    <div id="quote-{{ .Id }}" class="mb-4 min-h-12 hidden">{{ .HtmlText }}</div>
+    <div id="quote-{{ .Id }}" class="mb-4 hidden">{{ .HtmlText }}</div>
     <div>
       {{ range .Hashtags }}
         <button
-          class="bg-gray-200 hover:bg-gray-800 hover:text-white"
+          class="bg-gray-200 hover:bg-gray-800 hover:text-white p-0.5 rounded"
           hx-swap="afterend"
           hx-target="closest .quote"
           hx-get="/get/quotes?hashtag={{ . }}&start=10000">
@@ -30,6 +39,5 @@
         hx-target="#next-{{ .Next }}"
         hx-get="/get/quotes?hashtag={{ .Hashtag }}&start={{ .Next }}"></div>
     {{ end }}
-    <div class="text-sm">by {{ .Author }} <a href="{{ .Link }}" class="underline">Source</a></div>
   </div>
 {{ end }}
